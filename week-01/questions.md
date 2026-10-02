@@ -246,7 +246,6 @@ I realised that AI can assist with decisions, but humans should verify important
 -----
 ## Q8. Find AI Around You
 # A-Answer
-## Q8. Find AI Around You
 | System / Application | AI Involvement | Task Type | Evidence / Source | Conclusion |
 |---|---|---|---|---|
 | Google Assistant | Yes | Recognition / Generation | Google describes its Assistant as using AI to understand voice commands and respond to users. | AI is involved in understanding requests and generating responses. |
