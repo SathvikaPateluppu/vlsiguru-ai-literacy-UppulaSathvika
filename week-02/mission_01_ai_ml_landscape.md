@@ -92,3 +92,13 @@ ML is one part of AI, not the whole of AI.
 This means ML belongs within the broader AI field. It does not mean every AI system must use ML.
 
 AI is the broad field, ML learns patterns from data, Deep Learning uses multilayer neural networks, Generative AI creates new content, and LLMs focus on language-related tasks.
+
+## Sources
+IBM — What Is Artificial Intelligence?
+https://www.ibm.com/think/topics/artificial-intelligence
+
+IBM — What Is Machine Learning?
+https://www.ibm.com/think/topics/machine-learning
+
+IBM — What Is Deep Learning?
+https://www.ibm.com/think/topics/deep-learning
