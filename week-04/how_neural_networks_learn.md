@@ -3,157 +3,211 @@
 
 ## 1. Introduction
 
-A neural network learns by comparing its predictions with the correct answers and adjusting its parameters to reduce prediction errors.
+A neural network learns by identifying relationships between input data and expected outputs. It begins with adjustable parameters and gradually modifies them based on feedback from its predictions.
 
-For this example, consider a semiconductor inspection system that classifies images as **Defect** or **No defect**. The model learns from labelled inspection images and is later evaluated on images it has not seen during training.
+To understand this process in Physical Design, consider a model that identifies whether a region of a chip layout is likely to experience routing congestion.
 
-## 2. Forward Pass
+The network can learn from previously analysed layout regions and their congestion labels. By studying these examples, it attempts to recognise combinations of placement density, cell distribution, and routing demand that are associated with congestion.
 
-The forward pass is the process of sending input data through a neural network to produce a prediction.
+## 2. Understanding the Forward Pass
 
-For semiconductor inspection:
+The forward pass is the stage in which a neural network receives information and processes it to generate an output.
 
-1. An inspection image is converted into numerical pixel values.
-2. The values enter the input layer.
-3. Hidden-layer neurons process the information using weights, biases, and activation functions.
-4. The output layer produces predictions, such as the probabilities of "Defect" and "No defect."
+Consider a chip layout divided into smaller regions.
 
-The forward pass produces a prediction, but it does not by itself tell us whether that prediction is correct.
+1. Each region is represented using numerical information, such as cell density and estimated routing demand.
+2. These values are supplied to the input layer.
+3. Neurons in the hidden layers combine the input values using weights and biases.
+4. Activation functions help the network learn relationships that may not be simple linear patterns.
+5. The output layer produces a result indicating the estimated congestion category.
 
-## 3. Prediction and Loss Function
+For example, the network might predict that a particular layout region has a high probability of congestion.
 
-A **prediction** is the output produced by the model. A **target** is the correct label or answer associated with the training example.
+At this stage, the network has only produced an estimate. It still needs feedback to determine how close its prediction is to the expected result.
 
-A loss function measures how different the prediction is from the target. During training, the network uses this error information to improve its parameters.
+## 3. Understanding Prediction Error
 
-For example:
+During supervised learning, every training example contains input information and an expected output.
 
-- Input: A semiconductor image containing a confirmed scratch.
-- Target: Defect.
-- Prediction: No defect.
-- Result: The prediction is incorrect, so the loss indicates an error that the training process can use to adjust the model.
+The network's output is compared with the expected answer to determine how well it performed.
 
-The exact loss value depends on the chosen loss function and the model's output. The example above illustrates the process rather than reporting an actual experiment.
+A **loss function** converts the difference between the predicted output and the target into a numerical measure.
 
-## 4. Backpropagation
+Consider this illustrative example:
 
-Backpropagation calculates how the loss changes with respect to the network's trainable parameters, such as weights and biases.
+- Input: Numerical placement information from a chip region.
+- Actual label: High congestion.
+- Network prediction: Low congestion.
+- Observation: The model has predicted the wrong category.
 
-In simple terms:
+The loss function measures this prediction error according to the selected learning objective.
 
-1. The model makes a prediction.
-2. The loss function measures the prediction error.
-3. Backpropagation calculates information about how the parameters contributed to that error.
-4. The optimiser uses this information to update the parameters.
+A smaller loss generally indicates that predictions are closer to their targets. However, one training example cannot establish whether the complete model is accurate.
 
-This process helps the network improve its predictions over repeated training steps.
+## 4. How Backpropagation Helps Learning
 
-## 5. Optimisation and Parameter Updates
+Backpropagation is the method used to calculate gradients that describe how changes in the network's parameters affect its loss.
 
-An optimiser uses the gradients calculated during backpropagation to adjust the model's weights and biases.
+It sends error-related information backwards through the network, starting from the output layer.
 
-For example, gradient descent updates parameters in a direction intended to reduce the loss. The learning rate controls the size of each update.
+The process can be understood as follows:
 
-- Updates that are too large can make training unstable.
-- Updates that are too small can make learning slow.
-- Suitable updates help the model learn patterns from the training data.
+1. The network generates an output from the input features.
+2. The loss function measures the difference between the output and the expected result.
+3. Gradients are calculated for the trainable weights and biases.
+4. These gradients indicate how the parameters influence the loss.
+5. The calculated gradients are passed to the optimisation algorithm for parameter adjustment.
 
-Training does not guarantee that every prediction will become correct. The model's performance must be evaluated using appropriate data that was not used to fit its parameters.
+This gives the network a mathematical way to improve its predictions instead of changing its parameters randomly.
 
-## 6. What Is an Epoch?
+## 5. Role of the Optimiser and Learning Rate
 
-An **epoch** is one complete pass through the training dataset.
+After calculating gradients, the network needs a method to update its parameters. This is the role of an optimiser.
 
-Neural networks usually need multiple training steps and often multiple epochs to learn useful patterns. With each epoch, the optimiser can update the model's parameters based on the training examples.
+Gradient descent is one commonly used optimisation method. It adjusts the parameters in a direction intended to decrease the loss.
 
-Training for more epochs does not always improve generalisation. If the model starts memorising details that do not help on new examples, it may overfit.
+The **learning rate** determines how large each parameter update should be.
 
-## 7. Training Versus Inference
+Its effect can be understood through three situations:
+
+- **Very high learning rate:** The model may make large adjustments and fail to settle into a useful solution.
+- **Very low learning rate:** The model may require many updates to make meaningful progress.
+- **Appropriate learning rate:** The model can make more controlled adjustments during training.
+
+The optimiser repeatedly uses gradient information to update the network. The objective is to find parameter values that allow the model to make useful predictions on data beyond its training examples.
+
+## 6. Understanding Epochs and Iterations
+
+An epoch and an iteration are related concepts, but they do not mean the same thing.
+
+- **Epoch:** One complete pass through the entire training dataset.
+- **Iteration:** One parameter-update step performed during training.
+
+For example, suppose a training dataset contains 1,000 layout-region examples and the batch size is 100.
+
+The network processes the examples in 10 batches. If each batch produces one update, one epoch contains 10 iterations.
+
+Training may continue for multiple epochs so that the network can repeatedly learn from the available examples.
+
+However, increasing the number of epochs indefinitely is not a good strategy. The model may begin fitting details of the training data instead of learning relationships that remain useful on new layouts.
+
+## 7. Training and Inference in Neural Networks
+
+Training and inference are two different stages in the use of a neural network.
 
 | Training | Inference |
 |---|---|
-| Uses training examples, usually with known target labels in supervised learning. | Uses new input data to produce predictions. |
-| Calculates loss and updates weights and biases. | Uses the learned weights and biases to calculate outputs. |
-| Repeats optimisation steps over the training data. | Normally does not update the model's parameters. |
-| Aims to learn useful patterns from examples. | Applies the trained model to an input. |
+| The network learns from prepared examples. | The trained network processes new input data. |
+| Predictions are compared with target outputs. | Predictions are generated for the supplied input. |
+| Loss and gradients are calculated. | Training loss and backpropagation are normally not required. |
+| An optimiser updates the network parameters. | The learned parameters are normally kept unchanged. |
+| The objective is to develop a useful model. | The objective is to apply the learned model. |
 
-For semiconductor inspection, training uses labelled images to learn useful patterns. During inference, a new inspection image is processed by the trained network to produce a prediction.
+**Physical Design example:**
 
-## 8. Generalisation
+During training, the network studies layout-region data along with known congestion outcomes.
 
-**Generalisation** is the ability of a model to make useful predictions on examples beyond those used during training.
+During inference, it receives information from a new placement region and estimates its congestion category. This prediction could help an engineer identify regions that need further investigation.
 
-A model may perform well on training images but poorly on new images. This can happen when it learns patterns that are specific to the training dataset rather than patterns that remain useful in new situations.
+## 8. Why Generalisation Matters
 
-For example, a model might learn to associate a particular lighting condition with a defect because that condition appears frequently in its training images. If the lighting changes, the model may make incorrect predictions.
+A neural network should not simply remember its training examples. It should learn relationships that remain useful when it receives new data.
 
-A separate validation dataset can help compare models and monitor generalisation during development. A test dataset is reserved for the final evaluation after model choices have been made.
+This ability is called **generalisation**.
 
-## 9. Two Situations to Consider
+For example, a model may learn that certain combinations of high cell density and routing demand are associated with congestion. If it can identify similar conditions in a different layout, it may be learning a useful relationship.
 
-### Situation A: Incorrect Labels in Training Data
+However, if the network memorises specific characteristics of its training layouts, its performance may decrease when applied to another design.
 
-Suppose some images containing scratches are incorrectly labelled as "No defect."
+To assess generalisation:
 
-The network receives misleading target answers during training. It may learn incorrect associations between scratch-like patterns and the labels it is given.
+- Training data is used to fit the network.
+- Validation data helps compare model configurations and monitor performance during development.
+- Test data is kept separate for final evaluation.
 
-**What this tells us:** Reliable labels and good data quality are important. The training algorithm cannot automatically know that a supplied label is incorrect.
+The test dataset should not be repeatedly used to make development decisions because this can weaken its role as an independent evaluation.
 
-**Possible improvement:** Review questionable labels against reliable inspection records and correct confirmed errors.
+## 9. Practical Learning Challenges
 
-### Situation B: Good Training Performance but Poor Performance on New Images
+### Situation A: Unbalanced Training Examples
 
-Suppose a model performs very well on its training images but makes many mistakes on previously unseen images.
+Imagine a dataset containing many examples of low-congestion regions but only a few examples of high-congestion regions.
 
-This indicates that good training performance alone is not enough to establish that the model has learned patterns that generalise.
+The network may become more familiar with the majority category and perform poorly when identifying less common congestion hotspots.
 
-Possible causes include overfitting, unrepresentative training data, data-quality problems, or differences between training and deployment conditions.
+**Why is this a problem?**
 
-**Possible improvement:** Evaluate on suitable validation and test datasets, inspect errors, and check whether the data represents the conditions in which the model will be used.
+A model can appear to perform well overall while failing to identify important high-congestion regions.
 
-## 10. Training-Process Flowchart
+**Possible solution:**
 
-These situations show that data quality affects what a neural network learns, while evaluation on unseen data helps determine whether the learned patterns generalise. Incorrect labels can mislead training, and strong training performance alone cannot prove that a model will work reliably in practice.
+Examine the distribution of training labels, collect additional representative examples where possible, and use suitable evaluation metrics for each category.
+
+### Situation B: Different Layout Conditions
+
+Suppose a network is trained using data from one design with a particular placement density and cell distribution.
+
+Later, it is evaluated on another design with different layout characteristics.
+
+The learned relationships may not transfer well because the new design contains conditions that were not sufficiently represented during training.
+
+**Why is this a problem?**
+
+The network may depend too heavily on patterns from its original dataset.
+
+**Possible solution:**
+
+Include diverse and representative design examples during model development. Evaluate the model on separate designs to understand whether its predictions remain useful under different conditions.
+
+## 10. Neural Network Learning Cycle
+
+The following flowchart describes how a neural network learns from Physical Design data and how its performance can be evaluated.
 
 ```mermaid
 flowchart TD
-    A["Training image and target label"] --> B["Forward pass"]
-    B --> C["Prediction"]
-    C --> D["Calculate loss"]
-    D --> E["Backpropagation"]
-    E --> F["Optimiser updates weights and biases"]
-    F --> G{"More training steps?"}
-    G -- Yes --> B
-    G -- No --> H["Evaluate using validation data"]
-    H --> I{"Model needs improvement?"}
-    I -- Yes --> J["Adjust model settings"]
-    J --> B
-    I -- No --> K["Final evaluation using independent test data"]
-    K --> L["Review performance and errors"]
+    A["Prepared layout-region data"] --> B["Provide numerical input features"]
+    B --> C["Forward propagation"]
+    C --> D["Generate congestion prediction"]
+    D --> E["Compare prediction with target"]
+    E --> F["Calculate loss"]
+    F --> G["Backpropagation calculates gradients"]
+    G --> H["Optimiser adjusts parameters"]
+    H --> I{"Training complete?"}
+    I -- No --> B
+    I -- Yes --> J["Evaluate on validation data"]
+    J --> K{"Performance satisfactory?"}
+    K -- No --> L["Review data and training settings"]
+    L --> B
+    K -- Yes --> M["Evaluate on independent test data"]
+    M --> N["Analyse results and limitations"]
 ```
 
-### Explanation of the Flowchart
+### Explanation of the Learning Cycle
 
-1. **Input and target:** Provide a training image and its verified label.
-2. **Forward pass:** Process the input through the network.
-3. **Prediction:** Produce the model's output.
-4. **Loss calculation:** Compare the prediction with the target.
-5. **Backpropagation:** Calculate gradients that indicate how the trainable parameters affect the loss.
-6. **Parameter updates:** Use an optimiser to update weights and biases.
-7. **Repeated training:** Continue training steps and epochs as appropriate.
-8. **Validation:** Evaluate the model using separate validation data to compare configurations and decide whether improvements are needed.
-9. **Final evaluation:** After model choices are made, evaluate the selected model using independent test data.
-10. **Error review:** Analyse mistakes and limitations before considering practical use.
+1. **Prepared data:** Collect numerical features and corresponding congestion labels from previously analysed layout regions.
+2. **Input features:** Supply the prepared information to the neural network.
+3. **Forward propagation:** Process the features through the network's layers.
+4. **Prediction:** Generate an estimated congestion category.
+5. **Target comparison:** Compare the predicted category with the known training label.
+6. **Loss calculation:** Measure the prediction error using a suitable loss function.
+7. **Backpropagation:** Calculate gradients for the network parameters.
+8. **Optimisation:** Update weights and biases using the calculated gradients.
+9. **Repeated learning:** Continue training until the selected stopping condition is reached.
+10. **Evaluation:** Use validation and independent test data to examine how well the model performs beyond its training examples.
 
 ## 11. Conclusion
 
-A neural network learns through repeated forward passes, loss calculation, backpropagation, and parameter updates. An epoch represents one complete pass through the training dataset, while inference uses the trained model to make predictions without normally changing its parameters.
+Learning in a neural network is a repeated process of processing information, generating predictions, measuring errors, calculating gradients, and updating parameters.
 
-Good training performance does not guarantee good performance on unseen data. Reliable labels, representative datasets, appropriate validation, independent testing, and engineering review are all important when evaluating a potential semiconductor inspection application.
+The forward pass produces an output, the loss function measures prediction error, backpropagation calculates gradients, and the optimiser adjusts the network's weights and biases.
+
+For Physical Design applications, this learning process could help develop models that recognise patterns related to placement congestion. However, a useful model requires reliable training data, suitable parameter settings, and careful evaluation on unseen designs.
+
+Understanding these steps helps explain not only how neural networks learn but also why their predictions must be evaluated before they are considered useful in engineering workflows.
 
 ## References
 
 1. Google Machine Learning Crash Course — [Neural Networks](https://developers.google.com/machine-learning/crash-course/neural-networks)
-2. Google Machine Learning Crash Course — [Overfitting](https://developers.google.com/machine-learning/crash-course/overfitting/overfitting)
-3. Google Machine Learning Crash Course — [Classification](https://developers.google.com/machine-learning/crash-course/classification)
-
+2. Google Machine Learning Crash Course — [Gradient Descent](https://developers.google.com/machine-learning/crash-course/reducing-loss/gradient-descent)
+3. Google Machine Learning Crash Course — [Overfitting](https://developers.google.com/machine-learning/crash-course/overfitting/overfitting)
+4. TensorFlow — [Introduction to Neural Networks](https://www.tensorflow.org/learn)
