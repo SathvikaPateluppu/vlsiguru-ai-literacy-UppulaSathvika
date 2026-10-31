@@ -1,12 +1,6 @@
 
 # Week 04 — Neural Network Playground Experiment
 
-**Name:** Uppula Sathvika  
-**Track:** Physical Design (PD)  
-**Background:** B.Tech Graduate in Electronics and Communication Engineering (ECE)  
-**Program:** VLSIGuru AI Literacy Layer — 16-Week Program  
-**Week:** 04
-
 ## 1. Objective
 
 The objective of this experiment is to understand how a neural network learns by changing its architecture and observing how its predictions improve or change.
