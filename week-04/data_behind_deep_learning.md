@@ -154,21 +154,39 @@ Duplicates and closely related images must also be handled carefully. For exampl
 
 ## 8. Data Preparation Flow Diagram
 
-The following diagram summarises the workflow from raw inspection images to evaluation.
+The following flowchart explains the complete process of preparing semiconductor inspection images and using them to train and evaluate a deep learning model.
 
 ```mermaid
-flowchart TD
-    A["Raw Inspection Images"] --> B["Clean, Resize and Format Data"]
-    B --> C["Assign and Verify Labels"]
-    C --> D["Check Data Quality and Duplicates"]
-    D --> E["Split into Training, Validation and Test Sets"]
-    E --> F["Train Model Using Training Set"]
-    F --> G["Evaluate Using Validation Set"]
-    G --> H{"Improve the Model?"}
-    H -- Yes --> I["Adjust Model Settings"]
-    I --> F
-    H -- No --> J["Final Evaluation Using Test Set"]
-    J --> K["Review Errors and Limitations"]
+flowchart LR
+    A(["Raw Inspection Images"]) --> B["Data Preparation"]
+
+    subgraph PRE["Data Preprocessing"]
+        B --> C["Cleaning"]
+        C --> D["Resizing"]
+        D --> E["Normalization"]
+    end
+
+    E --> F["Label Verification"]
+    F --> G[("Prepared Dataset")]
+
+    G --> H{"Dataset Split"}
+
+    H --> I["Training Data"]
+    H --> J["Validation Data"]
+    H --> K["Testing Data"]
+
+    I --> L["Model Training"]
+    L --> M["Model Validation"]
+    J --> M
+
+    M --> N{"Performance Satisfactory?"}
+    N -- No --> O["Tune Model"]
+    O --> L
+
+    N -- Yes --> P["Final Testing"]
+    K --> P
+
+    P --> Q(["Performance Evaluation"])
 ```
 
 ### Explanation of Each Stage
